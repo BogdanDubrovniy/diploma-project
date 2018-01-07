@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions">
+
+    <h:head>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/my-custom-css.css"/>
+    </h:head>
+
+    <body>
+        <ui:debug hotkey="k"/>
+
+        <ui:remove>
+            <div>
+                <h:form>
+                    <p:commandButton value="refresh all"
+                                     update="@form
+                                     upload-file-form
+                                     results-list-form"/>
+                </h:form>
+            </div>
+        </ui:remove>
+
+        <div id="upload-file-div">
+            <h:form id="upload-file-form" enctype="multipart/form-data">
+                <div>
+                    <h:inputFile value="#{sessionBean.file}" />
+                    <h:message for="upload-file-form"/>
+                </div>
+
+                <ui:remove>
+                    <!--<div>-->
+                        <!--<p:inputNumber id="hv-value-input" minValue="0.00"-->
+                                       <!--value="#{sessionBean.problemMetricValues.HVValue}"-->
+                                       <!--decimalPlaces="2">-->
+                            <!--<p:watermark for="hv-value-input"-->
+                                         <!--value="Halstead Volume Value"/>-->
+                        <!--</p:inputNumber>-->
+                    <!--</div>-->
+                </ui:remove>
+
+                <div>
+                    <p:inputNumber id="cc-value-input" minValue="0"
+                                   value="#{sessionBean.problemMetricValues.CCValue}"
+                                   decimalPlaces="0">
+                        <p:watermark for="cc-value-input"
+                                     value="CC Value"/>
+                    </p:inputNumber>
+                </div>
+
+
+                <div>
+                    <h:commandButton value="submit"
+                                     actionListener="#{sessionBean.addResult}"/>
+                </div>
+
+            </h:form>
+        </div>
+
+        <div>
+            <h:form id="results-list-form">
+                <input type="hidden"
+                       id="hidden-field-operation-id"
+                       name="hidden-field-operation-id"/>
+
+                <p:dataTable var="currentResult"
+                             value="#{diplomaBean.researchModelList}"
+                             emptyMessage="You have had yet no research"
+                             paginator="true"
+                             rows="5">
+
+                    <f:facet name="header">
+                        Researches
+                    </f:facet>
+
+                    <p:column sortBy="#{currentResult.id}"
+                              headerText="Research Number">
+                        #{currentResult.id}
+                    </p:column>
+
+                    <p:column headerText="Research File Name">
+                        #{currentResult.fileName}
+                    </p:column>
+
+                    <p:column sortBy="#{currentResult.researchDate}"
+                              headerText="Research Date">
+                        #{currentResult.researchDate}
+                    </p:column>
+
+                    <p:column headerText="Operation">
+                        <p:commandButton value="Delete"
+                                         update="results-list-form"
+                                         onclick="const hiddenId = '#{currentResult.id}';
+                                                 setResearchId(hiddenId)"
+                                         actionListener="#{sessionBean.deleteResult}"/>
+                    </p:column>
+
+                    <p:column headerText="SLOC">
+                        <p:commandButton value="Show"
+                                         actionListener="#{sessionBean.openSLOCDialog}">
+                            <f:param name="res-id" value="#{currentResult.id}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="Holsted Volume">
+                        <p:commandButton value="Show"
+                                         actionListener="#{sessionBean.openHVDialog}">
+                            <f:param name="res-id" value="#{currentResult.id}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <p:column headerText="Maintainability Index">
+                        <p:commandButton value="Show"
+                                         actionListener="#{sessionBean.openMIDialog}">
+                            <f:param name="res-id" value="#{currentResult.id}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        Total: #{fn:length(diplomaBean.researchModelList)} research(es)
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+        </div>
+
+        <script type="text/javascript">
+            function setResearchId(id) {
+                document.getElementById("hidden-field-operation-id")
+                    .value = id;
+            }
+        </script>
+    </body>
+</html>

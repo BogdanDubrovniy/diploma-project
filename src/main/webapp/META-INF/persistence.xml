@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             version="1.0">
+    <persistence-unit name="departmentPersistenceUnit"
+                      transaction-type="RESOURCE_LOCAL">
+        <class>com.dubrovnyi.bohdan.db.models.SLOCModel</class>
+        <class>com.dubrovnyi.bohdan.db.models.MIModel</class>
+        <class>com.dubrovnyi.bohdan.db.models.HVModel</class>
+        <class>com.dubrovnyi.bohdan.db.models.ResearchModel</class>
+    </persistence-unit>
+</persistence>
